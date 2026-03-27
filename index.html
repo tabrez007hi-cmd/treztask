@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="icon" type="image/png" href="logo.png">
+
+<link rel="apple-touch-icon" href="logo.png">
+
+<link rel="shortcut icon" href="logo.png" type="image/x-icon">
     <title>TRez Task Pro - Dashboard & TODO</title>
+  
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Configure Tailwind for Dark Mode -->
     <script>
@@ -23,16 +29,6 @@
     <meta name="description" content="Master your time, achieve your goals with TRez Task Pro.">
     <meta name="keywords" content="online free, task manager, todo list">
     <meta name="author" content="Tabrez">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph Metadata for Social Media -->
-    <meta property="og:title" content="TRez Task Pro">
-    <meta property="og:description" content="Master your time, achieve your goals.">
-    <meta property="og:image" content="logo.png">
-    <meta property="og:url" content="https://treztask.netlify.app">
-    <meta property="og:type" content="website">
-    <link rel="icon" href="/logo.png" type="image/png">
-    <link rel="canonical" href="https://treztask.netlify.app">
 
     <!-- Pre-load Theme to prevent flash -->
     <script>
@@ -46,21 +42,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        /* Sleek Glassmorphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        .dark .glass {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        body { font-family: 'Inter', sans-serif; }
         
         /* Modern Loader */
         .loader {
@@ -147,6 +129,9 @@
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Mobile Overlay Transition */
+        #mobileOverlay { transition: opacity 0.3s ease-in-out; }
     </style>
 </head>
 <body class="text-slate-800 dark:text-slate-200 bg-[#f8fafc] dark:bg-slate-900 antialiased overflow-x-hidden selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-900/50 dark:selection:text-indigo-200 transition-colors duration-300">
@@ -158,7 +143,6 @@
             <div class="absolute inset-0 rounded-full border-4 border-indigo-600 dark:border-indigo-400 border-t-transparent loader"></div>
         </div>
         <p class="text-indigo-600 dark:text-indigo-400 font-semibold tracking-widest uppercase text-xs animate-pulse">Syncing Workspace.</p>
-        <p class="text-indigo-600 dark:text-indigo-400 font-semibold tracking-widest uppercase text-xs animate-pulse mt-2">Please Wait Patiently...</p>
     </div>
 
     <!-- Auth Section -->
@@ -177,21 +161,21 @@
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
-                        <input type="text" id="regUsername" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-sm dark:text-white" placeholder="John Doe">
+                        <input type="text" id="regUsername" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm dark:text-white" placeholder="John Doe">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Email Address</label>
                     <div class="relative">
                         <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
-                        <input type="email" id="authEmail" required class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-sm dark:text-white" placeholder="you@example.com">
+                        <input type="email" id="authEmail" required class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm dark:text-white" placeholder="you@example.com">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Password</label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
-                        <input type="password" id="authPassword" required class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 focus:bg-white dark:focus:bg-slate-800 outline-none transition-all text-sm dark:text-white" placeholder="••••••••">
+                        <input type="password" id="authPassword" required class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm dark:text-white" placeholder="••••••••">
                     </div>
                 </div>
                 <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 mt-8">
@@ -201,133 +185,176 @@
 
             <p class="mt-8 text-center text-sm text-slate-500 dark:text-slate-400">
                 <span id="toggleText">Don't have an account?</span>
-                <button id="toggleAuth" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:text-indigo-700 dark:hover:text-indigo-300 ml-1 transition-colors">Create Account</button>
+                <button id="toggleAuth" class="text-indigo-600 dark:text-indigo-400 font-semibold hover:text-indigo-700 ml-1 transition-colors">Create Account</button>
             </p>
         </div>
     </div>
 
     <!-- Main App Section -->
-    <div id="appSection" class="hidden-section flex flex-col md:flex-row min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div id="appSection" class="hidden-section flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900">
         
-        <!-- Sidebar Navigation -->
-        <nav class="w-full md:w-24 lg:w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex md:flex-col p-4 md:p-6 z-40 sticky top-0 md:h-screen justify-between md:justify-start shrink-0 transition-colors">
-            <div class="flex items-center gap-3 px-2 mb-0 md:mb-10">
-                <div class="bg-indigo-600 min-w-[36px] h-9 rounded-lg text-white shadow-sm flex items-center justify-center">
-                    <i class="fas fa-check-double text-sm"></i>
+        <!-- Mobile Top Bar -->
+        <div class="md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-[60]">
+            <div class="flex items-center gap-2">
+                <div class="bg-indigo-600 w-8 h-8 rounded-lg text-white flex items-center justify-center shadow-sm">
+                    <i class="fas fa-check-double text-xs"></i>
                 </div>
-                <span class="font-bold text-xl hidden lg:block text-slate-900 dark:text-white tracking-tight">TRezTask.</span>
+                <span class="font-bold text-lg text-slate-900 dark:text-white tracking-tight">TRezTask.</span>
             </div>
+            <button onclick="toggleMobileMenu()" class="text-slate-500 dark:text-slate-400 text-xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
 
-            <div class="flex flex-row md:flex-col gap-2 flex-grow items-center md:items-stretch">
-                <button onclick="showPage('dashboard')" class="nav-btn p-3 lg:px-4 rounded-xl flex items-center gap-3 transition-colors w-auto md:w-full nav-active group" id="nav-dashboard">
-                    <i class="fas fa-chart-pie text-lg w-6"></i>
-                    <span class="font-medium hidden lg:block text-sm">Dashboard</span>
-                </button>
-                <button onclick="showPage('todo')" class="nav-btn p-3 lg:px-4 rounded-xl flex items-center gap-3 transition-colors text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white w-auto md:w-full group" id="nav-todo">
-                    <i class="fas fa-tasks text-lg w-6"></i>
-                    <span class="font-medium hidden lg:block text-sm">My Tasks</span>
-                </button>
-            </div>
+        <!-- Mobile Overlay -->
+        <div id="mobileOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-[70] hidden-section md:hidden"></div>
 
-            <div class="flex items-center md:mt-auto pt-4 md:pt-6 border-t border-slate-100 dark:border-slate-700">
-                <button onclick="openProfileModal()" class="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group">
-                    <img id="profileImg" src="" class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-slate-600 object-cover border border-slate-200 dark:border-slate-600" alt="P">
-                    <div class="hidden lg:block text-left overflow-hidden">
-                        <p class="text-sm font-semibold text-slate-900 dark:text-white truncate" id="sideProfileName">Loading...</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Settings & Profile</p>
-                    </div>
-                </button>
-            </div>
-        </nav>
-
-        <!-- Content Area -->
-        <main class="flex-grow p-6 md:p-8 lg:p-10 overflow-y-auto max-h-screen">
-            
-            <!-- Dashboard Page -->
-            <div id="page-dashboard" class="space-y-8 max-w-6xl mx-auto fade-in-up">
-                <header class="flex flex-col gap-1">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome back, <span id="displayUsername" class="text-indigo-600 dark:text-indigo-400">User</span> 👋</h2>
-                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium" id="currentDateDisplay"></p>
-                </header>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Today's Focus</p>
-                            <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-bullseye"></i>
-                            </div>
+        <div class="flex flex-1 overflow-hidden relative">
+            <!-- Sidebar Navigation -->
+            <nav id="sidebarNav" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col p-6 z-[80] fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 md:relative md:translate-x-0 shrink-0">
+                <div class="flex items-center justify-between mb-10">
+                    <div class="flex items-center gap-3 px-2">
+                        <div class="bg-indigo-600 min-w-[36px] h-9 rounded-lg text-white shadow-sm flex items-center justify-center">
+                            <i class="fas fa-check-double text-sm"></i>
                         </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-4" id="todayPercent">0%</h3>
-                        <div class="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                            <div id="todayProgressFill" class="h-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-1000 ease-out" style="width: 0%"></div>
-                        </div>
+                        <span class="font-bold text-xl text-slate-900 dark:text-white tracking-tight">TRezTask.</span>
                     </div>
-
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Weekly Goal</p>
-                            <div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white" id="weeklyStats">0 / 0</h3>
-                        <p class="text-sm text-emerald-600 dark:text-emerald-400 font-medium mt-2 flex items-center gap-1"><i class="fas fa-arrow-trend-up text-xs"></i> Keep pushing forward!</p>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
-                        <div class="flex items-center justify-between mb-4">
-                            <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending Tasks</p>
-                            <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-inbox"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-3xl font-bold text-slate-900 dark:text-white" id="totalTasks">0</h3>
-                        <p class="text-sm text-amber-600 dark:text-amber-400 font-medium mt-2">Tasks waiting for you.</p>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Productivity Trends <i class="fas fa-chart-line ml-1"></i></h3>
-                    </div>
-                    <div class="h-72 relative w-full">
-                        <canvas id="progressionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TODO Page -->
-            <div id="page-todo" class="hidden-section space-y-8 max-w-6xl mx-auto fade-in-up">
-                <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
-                    <div>
-                        <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">My Tasks <i class="fa-regular fa-clipboard ml-1"></i></h2>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Organize your work, one day at a time.</p>
-                    </div>
-                    <button onclick="openSectionModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2 font-medium text-sm whitespace-nowrap">
-                        <i class="fas fa-plus"></i> <span>Add New Day</span>
+                    <!-- Close button for mobile inside sidebar -->
+                    <button onclick="toggleMobileMenu()" class="md:hidden text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                        <i class="fas fa-times text-xl"></i>
                     </button>
-                </header>
-
-                <div id="todoListsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                    <!-- Dynamic Date Sections -->
                 </div>
+
+                <div class="flex flex-col gap-2 flex-grow items-stretch">
+                    <button onclick="showPage('dashboard')" class="nav-btn p-3 px-4 rounded-xl flex items-center gap-3 transition-colors w-full nav-active group" id="nav-dashboard">
+                        <i class="fas fa-chart-pie text-lg w-6"></i>
+                        <span class="font-medium text-sm">Dashboard</span>
+                    </button>
+                    <button onclick="showPage('todo')" class="nav-btn p-3 px-4 rounded-xl flex items-center gap-3 transition-colors text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white w-full group" id="nav-todo">
+                        <i class="fas fa-tasks text-lg w-6"></i>
+                        <span class="font-medium text-sm">Today's Tasks</span>
+                    </button>
+                    <button onclick="showPage('alldays')" class="nav-btn p-3 px-4 rounded-xl flex items-center gap-3 transition-colors text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white w-full group" id="nav-alldays">
+                        <i class="fas fa-calendar-days text-lg w-6"></i>
+                        <span class="font-medium text-sm">All Days History</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center mt-auto pt-6 border-t border-slate-100 dark:border-slate-700">
+                    <button onclick="openProfileModal()" class="flex items-center gap-3 w-full p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors group">
+                        <img id="profileImg" src="" class="w-10 h-10 rounded-full bg-indigo-50 dark:bg-slate-600 object-cover border border-slate-200 dark:border-slate-600" alt="P">
+                        <div class="text-left overflow-hidden">
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white truncate" id="sideProfileName">Loading...</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">Settings & Profile</p>
+                        </div>
+                    </button>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="flex-grow p-6 md:p-8 lg:p-10 overflow-y-auto max-h-screen relative w-full">
                 
-                <div id="emptyState" class="text-center py-20 hidden-section bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 transition-colors">
-                    <div class="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-clipboard-list text-3xl text-slate-300 dark:text-slate-500"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200">Clean Slate ✨</h3>
-                    <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">You haven't planned any days yet.</p>
-                    <button onclick="openSectionModal()" class="mt-6 text-indigo-600 dark:text-indigo-400 font-medium text-sm hover:underline">Create your first list</button>
-                </div>
-            </div>
+                <!-- Dashboard Page -->
+                <div id="page-dashboard" class="space-y-8 max-w-6xl mx-auto fade-in-up">
+                    <header class="flex flex-col gap-1">
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome back, <span id="displayUsername" class="text-indigo-600 dark:text-indigo-400">User</span> 👋</h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm font-medium" id="currentDateDisplay"></p>
+                    </header>
 
-        </main>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Today's Focus</p>
+                                <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-900 dark:text-white mb-4" id="todayPercent">0%</h3>
+                            <div class="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+                                <div id="todayProgressFill" class="h-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-1000 ease-out" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Weekly Goal</p>
+                                <div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-900 dark:text-white" id="weeklyStats">0 / 0</h3>
+                            <p class="text-sm text-emerald-600 dark:text-emerald-400 font-medium mt-2 flex items-center gap-1"><i class="fas fa-arrow-trend-up text-xs"></i> Keep pushing forward!</p>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-all hover:shadow-md">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending Today</p>
+                                <div class="w-10 h-10 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-inbox"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-900 dark:text-white" id="totalTasks">0</h3>
+                            <p class="text-sm text-amber-600 dark:text-amber-400 font-medium mt-2">Tasks waiting for today.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Productivity Trends <i class="fas fa-chart-line ml-1"></i></h3>
+                        </div>
+                        <div class="h-72 relative w-full">
+                            <canvas id="progressionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TODAY's TODO Page -->
+                <div id="page-todo" class="hidden-section space-y-8 max-w-4xl mx-auto fade-in-up">
+                    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Today's Tasks <i class="fa-regular fa-clipboard ml-1"></i></h2>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Conquer the day, step by step.</p>
+                        </div>
+                        <button onclick="startTodayList()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2 font-medium text-sm whitespace-nowrap">
+                            <i class="fas fa-bolt"></i> <span>Start Today</span>
+                        </button>
+                    </header>
+
+                    <div id="todayContainer" class="grid grid-cols-1 gap-6 items-start">
+                        <!-- Dynamic Today Section -->
+                    </div>
+                </div>
+
+                <!-- ALL DAYS Page -->
+                <div id="page-alldays" class="hidden-section space-y-8 max-w-6xl mx-auto fade-in-up">
+                    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">All Days History <i class="fa-solid fa-calendar-days ml-1"></i></h2>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Review your past performance and notes.</p>
+                        </div>
+                        <button onclick="openSectionModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2 font-medium text-sm whitespace-nowrap">
+                            <i class="fas fa-plus"></i> <span>Add Past Day</span>
+                        </button>
+                    </header>
+
+                    <div id="allDaysContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                        <!-- Dynamic Historic Days -->
+                    </div>
+                    
+                    <div id="emptyState" class="text-center py-20 hidden-section bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 transition-colors">
+                        <div class="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-clipboard-list text-3xl text-slate-300 dark:text-slate-500"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200">Clean Slate ✨</h3>
+                        <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">You haven't planned any days yet.</p>
+                    </div>
+                </div>
+
+            </main>
+        </div>
     </div>
 
     <!-- Modals -->
-    
     <!-- Profile & Settings Modal -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 md:p-6 hidden-section transition-opacity">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl shadow-2xl flex flex-col overflow-hidden fade-in-up transition-colors">
@@ -378,9 +405,8 @@
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
-            
             <div class="p-4 text-center bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
-                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wide">TRezTask Pro v1.2.2 &bull; Made By Tabrez.</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wide">TRezTask Pro v2.0.0 &bull; Updated Timer Edition</p>
             </div>
         </div>
     </div>
@@ -398,7 +424,7 @@
             <div class="p-6 md:p-8 flex-grow overflow-y-auto space-y-6">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Task Description</label>
-                    <input type="text" id="taskInput" placeholder="What needs to be done?" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-slate-900 dark:text-white font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500">
+                    <input type="text" id="taskInput" placeholder="What needs to be done?" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-slate-900 dark:text-white font-medium placeholder:text-slate-400">
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -417,10 +443,11 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Estimated Time</label>
+                        <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Est. Time (Minutes)</label>
                         <div class="relative">
                             <i class="far fa-clock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
-                            <input type="text" id="taskTime" placeholder="e.g. 45 mins" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500">
+                            <!-- Updated to type number for timer functionality -->
+                            <input type="number" id="taskTime" placeholder="e.g. 45" min="1" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium dark:text-white placeholder:text-slate-400">
                         </div>
                     </div>
                 </div>
@@ -428,7 +455,7 @@
                 <div class="pt-2">
                     <div class="flex justify-between items-center mb-3">
                         <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sub-Steps (Optional)</label>
-                        <button onclick="addSubtaskField()" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 text-xs font-semibold flex items-center gap-1 transition-colors">
+                        <button onclick="addSubtaskField()" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 text-xs font-semibold flex items-center gap-1 transition-colors">
                             <i class="fas fa-plus"></i> Add Step
                         </button>
                     </div>
@@ -446,7 +473,7 @@
         </div>
     </div>
 
-    <!-- Section Modal -->
+    <!-- Section Modal (For Past Days) -->
     <div id="sectionModal" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden-section transition-opacity">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl p-8 shadow-2xl fade-in-up transition-colors">
             <h3 class="text-xl font-bold mb-6 text-slate-900 dark:text-white tracking-tight flex items-center gap-2"><i class="far fa-calendar-alt text-indigo-500"></i> Select a date</h3>
@@ -464,7 +491,6 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Config exactly as provided 
         const userFirebaseConfig = {
             apiKey: "AIzaSyB0jLiawN_C2FQyzDqCcGl83NC1qNp8nes",
             authDomain: "ez-play-01.firebaseapp.com",
@@ -475,7 +501,6 @@
             appId: "1:486678085182:web:71a80ef0f9ca483dee5b6f"
         };
         
-        // Ensure compatibility if running within preview environment
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : userFirebaseConfig;
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -488,10 +513,24 @@
         let activeListId = null;
         let editingTaskId = null;
         let progressionChart = null;
+        let activePage = 'dashboard';
+        let activeTimers = {}; // Stores timer state { taskId: { remainingSec: number, isPlaying: boolean } }
 
         const getEl = (id) => document.getElementById(id);
         const show = (id) => getEl(id).classList.remove('hidden-section');
         const hide = (id) => getEl(id).classList.add('hidden-section');
+
+        // Mobile Nav Logic
+        window.toggleMobileMenu = () => {
+            const nav = getEl('sidebarNav');
+            const overlay = getEl('mobileOverlay');
+            nav.classList.toggle('-translate-x-full');
+            if (nav.classList.contains('-translate-x-full')) {
+                hide('mobileOverlay');
+            } else {
+                show('mobileOverlay');
+            }
+        };
 
         // Dark Theme Logic
         const toggleTheme = () => {
@@ -499,9 +538,7 @@
             html.classList.toggle('dark');
             const isDark = html.classList.contains('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            
-            // Re-render chart to update colors
-            if (!getEl('page-dashboard').classList.contains('hidden-section')) {
+            if (activePage === 'dashboard') {
                 renderChart();
             }
         };
@@ -510,20 +547,32 @@
 
         // Navigation
         window.showPage = (page) => {
-            ['dashboard', 'todo'].forEach(p => {
+            activePage = page;
+            ['dashboard', 'todo', 'alldays'].forEach(p => {
                 const btn = getEl(`nav-${p}`);
                 const pageEl = getEl(`page-${p}`);
                 if(p === page) {
                     show(`page-${p}`);
-                    btn.classList.add('nav-active');
-                    btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                    if(btn) {
+                        btn.classList.add('nav-active');
+                        btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                    }
                 } else {
                     hide(`page-${p}`);
-                    btn.classList.remove('nav-active');
-                    btn.classList.add('text-slate-500', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                    if(btn) {
+                        btn.classList.remove('nav-active');
+                        btn.classList.add('text-slate-500', 'dark:text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-700');
+                    }
                 }
             });
+
+            // Close mobile menu on navigate
+            if(!getEl('sidebarNav').classList.contains('-translate-x-full')) {
+                toggleMobileMenu();
+            }
+
             if(page === 'dashboard') updateDashboard();
+            if(page === 'todo' || page === 'alldays') renderTodoLists();
         };
 
         // Auth Logic
@@ -588,6 +637,7 @@
             unsubLists = onSnapshot(listsRef, (snap) => {
                 lists = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 renderTodoLists();
+                updateDashboard();
             }, (err) => console.error(err));
 
             unsubTasks = onSnapshot(tasksRef, (snap) => {
@@ -604,20 +654,33 @@
         };
         window.closeSectionModal = () => hide('sectionModal');
 
+        window.startTodayList = async () => {
+            const dateVal = new Date().toLocaleDateString('en-CA');
+            const exists = lists.find(l => l.date === dateVal);
+            if(exists) { showToast("Today's list already exists!", "info"); return; }
+            await createList(dateVal);
+        };
+
         window.saveSection = async () => {
             const dateVal = getEl('sectionDate').value;
             if(!dateVal) return;
+            await createList(dateVal);
+            closeSectionModal();
+        };
+
+        async function createList(dateVal) {
             const dateObj = new Date(dateVal);
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'users', currentUser.uid, 'lists'), {
                     date: dateVal,
                     day: dateObj.toLocaleDateString('en-US', { weekday: 'long' }),
                     createdAt: Timestamp.now(),
-                    collapsed: false
+                    collapsed: false,
+                    rating: 0,
+                    note: ""
                 });
-                closeSectionModal();
             } catch (e) { showToast("Error creating list", 'error'); }
-        };
+        }
 
         window.toggleListCollapse = async (id, current) => {
             await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'lists', id), { collapsed: !current });
@@ -627,6 +690,14 @@
             if(!confirm("Delete this day's workspace?")) return;
             await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'lists', id));
             tasks.filter(t => t.listId === id).forEach(t => deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', t.id)));
+        };
+
+        window.rateDay = async (id, rating) => {
+            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'lists', id), { rating });
+        };
+
+        window.saveDayNote = async (id, note) => {
+            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'lists', id), { note });
         };
 
         // Task Handling
@@ -639,13 +710,13 @@
                 const task = tasks.find(t => t.id === taskId);
                 getEl('taskInput').value = task.title;
                 getEl('taskTime').value = task.time || "";
-                getEl('taskPriority').value = task.priority || 2; // Default to Normal if undefined
+                getEl('taskPriority').value = task.priority || 2; 
                 task.subtasks?.forEach(s => addSubtaskField(s.text, s.completed));
                 getEl('modalTitle').innerText = "Refine your task ✍️";
             } else {
                 getEl('taskInput').value = "";
                 getEl('taskTime').value = "";
-                getEl('taskPriority').value = 2; // Default to Normal Priority
+                getEl('taskPriority').value = 2;
                 getEl('modalTitle').innerText = "Define your task ✨";
             }
             show('taskModal');
@@ -675,12 +746,12 @@
                 completed: false
             })).filter(s => s.text !== "");
 
-            // Priority: 3 (High), 2 (Normal), 1 (Low)
             const priority = parseInt(getEl('taskPriority').value) || 2;
+            const timeMinutes = parseInt(getEl('taskTime').value) || null; // Only store numeric minutes
 
             const data = {
                 title,
-                time: getEl('taskTime').value.trim(),
+                time: timeMinutes,
                 subtasks,
                 listId: activeListId,
                 priority: priority,
@@ -691,7 +762,6 @@
             try {
                 if(editingTaskId) {
                     const existingTask = tasks.find(t => t.id === editingTaskId);
-                    // Preserve original creation time if exists, else assign now
                     data.createdAt = existingTask.createdAt || Timestamp.now();
                     await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', editingTaskId), data);
                 } else {
@@ -704,6 +774,9 @@
 
         window.toggleTaskStatus = async (id, status) => {
             await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), { completed: !status });
+            if(!status && activeTimers[id]) {
+                activeTimers[id].isPlaying = false; // Stop timer if task gets completed
+            }
         };
 
         window.toggleSubtaskMain = async (taskId, subtaskIdx) => {
@@ -714,7 +787,10 @@
         };
 
         window.deleteTask = async (id) => {
-            if(confirm("Discard this task?")) await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id));
+            if(confirm("Discard this task?")) {
+                await deleteDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id));
+                if(activeTimers[id]) delete activeTimers[id];
+            }
         };
 
         // Custom function to get time value for sorting securely
@@ -725,129 +801,234 @@
             return 0; // Fallback
         }
 
-        // UI Rendering
-        function renderTodoLists() {
-            const container = getEl('todoListsContainer');
-            if(lists.length === 0) { show('emptyState'); container.innerHTML = ""; return; }
-            hide('emptyState');
-
-            const sortedLists = [...lists].sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Timer Logic
+        window.toggleTimer = (taskId, totalMin) => {
+            if (!activeTimers[taskId]) {
+                activeTimers[taskId] = { isPlaying: false, remainingSec: totalMin * 60 };
+            }
+            const timer = activeTimers[taskId];
+            if (timer.remainingSec <= 0) {
+                timer.remainingSec = totalMin * 60; // Reset if it was 0
+            }
+            timer.isPlaying = !timer.isPlaying;
             
-            container.innerHTML = sortedLists.map(list => {
-                let listTasks = tasks.filter(t => t.listId === list.id);
-                
-                // --- ADVANCED SORTING LOGIC ---
-                listTasks.sort((a, b) => {
-                    const priorityA = a.priority || 2; 
-                    const priorityB = b.priority || 2;
-                    
-                    if (priorityA !== priorityB) {
-                        return priorityB - priorityA; // Descending priority (3 comes before 1)
+            const btn = getEl(`timer-btn-${taskId}`);
+            if(btn) btn.innerHTML = timer.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+        };
+
+        function formatTime(sec) {
+            const m = Math.floor(sec / 60).toString().padStart(2, '0');
+            const s = (sec % 60).toString().padStart(2, '0');
+            return `${m}:${s}`;
+        }
+
+        // Global Timer Loop
+        setInterval(() => {
+            for (const [taskId, timer] of Object.entries(activeTimers)) {
+                if (timer.isPlaying && timer.remainingSec > 0) {
+                    timer.remainingSec--;
+                    const displayEl = getEl(`timer-display-${taskId}`);
+                    if (displayEl) displayEl.innerText = formatTime(timer.remainingSec);
+
+                    if (timer.remainingSec <= 0) {
+                        timer.isPlaying = false;
+                        showToast("Task time is up! ⏰", 'info');
+                        const btn = getEl(`timer-btn-${taskId}`);
+                        if(btn) btn.innerHTML = '<i class="fas fa-play"></i>';
                     }
-                    
-                    // If priority is equal, sort by Creation Time (Newest First)
-                    const timeA = getCreationTimeMs(a.createdAt);
-                    const timeB = getCreationTimeMs(b.createdAt);
-                    return timeB - timeA; 
-                });
+                }
+            }
+        }, 1000);
 
-                const completed = listTasks.filter(t => t.completed).length;
-                const progress = listTasks.length ? Math.round((completed / listTasks.length) * 100) : 0;
 
-                return `
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-fit fade-in-up transition-colors">
-                    <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700/80 transition-colors">
-                        <div class="flex items-center gap-4 cursor-pointer flex-grow" onclick="toggleListCollapse('${list.id}', ${list.collapsed})">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm transition-transform ${list.collapsed ? '-rotate-90' : ''}">
-                                <i class="fas fa-chevron-down text-xs"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${list.day}</h4>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">${list.date}</p>
-                            </div>
+        // UI Rendering
+        function generateListHTML(list, listTasks) {
+            // Sort tasks: Priority first, then newest
+            listTasks.sort((a, b) => {
+                const priorityA = a.priority || 2;
+                const priorityB = b.priority || 2;
+                if (priorityA !== priorityB) return priorityB - priorityA; 
+                return getCreationTimeMs(b.createdAt) - getCreationTimeMs(a.createdAt);
+            });
+
+            const completed = listTasks.filter(t => t.completed).length;
+            const progress = listTasks.length ? Math.round((completed / listTasks.length) * 100) : 0;
+
+            const stars = [1,2,3,4,5].map(star => `
+                <button onclick="rateDay('${list.id}', ${star})" class="transition-transform hover:scale-110 focus:outline-none">
+                    <i class="fas fa-star ${list.rating >= star ? 'text-yellow-400' : 'text-slate-300 dark:text-slate-600'}"></i>
+                </button>
+            `).join('');
+
+            return `
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-fit fade-in-up transition-colors">
+                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700/80 transition-colors">
+                    <div class="flex items-center gap-4 cursor-pointer flex-grow" onclick="toggleListCollapse('${list.id}', ${list.collapsed})">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm transition-transform ${list.collapsed ? '-rotate-90' : ''}">
+                            <i class="fas fa-chevron-down text-xs"></i>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="hidden sm:flex flex-col items-end mr-3 w-16">
-                                <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mb-1">${progress}%</span>
-                                <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                                    <div class="h-full bg-indigo-500 transition-all" style="width: ${progress}%"></div>
-                                </div>
-                            </div>
-                            <button onclick="openTaskModal('${list.id}')" class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center hover:bg-indigo-600 dark:hover:bg-indigo-600 hover:text-white dark:hover:text-white transition-colors">
-                                <i class="fas fa-plus text-sm"></i>
-                            </button>
-                            <button onclick="deleteList('${list.id}')" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-500/50 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                                <i class="fas fa-trash-alt text-xs"></i>
-                            </button>
+                        <div>
+                            <h4 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${list.day}</h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">${list.date}</p>
                         </div>
                     </div>
-                    
-                    <div class="${list.collapsed ? 'hidden-section' : ''} divide-y divide-slate-100 dark:divide-slate-700/50">
-                        ${listTasks.length === 0 ? '<div class="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No tasks added yet.</div>' : ''}
-                        ${listTasks.map(task => {
-                            // Determine Priority Badge Badge
-                            let badgeHTML = '';
-                            if (task.priority === 3) {
-                                badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-fire-flame-curved text-[9px]"></i> High</span>`;
-                            } else if (task.priority === 1) {
-                                badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-arrow-down text-[9px]"></i> Low</span>`;
-                            }
-
-                            return `
-                            <div class="task-card group relative p-5 bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                                <div class="flex items-start gap-4">
-                                    <button onclick="toggleTaskStatus('${task.id}', ${task.completed})" class="mt-0.5 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${task.completed ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-500 text-transparent hover:border-indigo-400 dark:hover:border-indigo-500'}">
-                                        <i class="fas fa-check text-[10px]"></i>
-                                    </button>
-                                    <div class="flex-grow min-w-0">
-                                        <div class="flex justify-between items-start mb-1.5 gap-2">
-                                            <div class="flex flex-wrap items-center">
-                                                <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 transition-colors ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</p>
-                                                ${!task.completed ? badgeHTML : ''}
-                                            </div>
-                                            <div class="task-actions opacity-0 flex items-center gap-1 shrink-0">
-                                                <button onclick="openTaskModal('${list.id}', '${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="fas fa-pen text-xs"></i></button>
-                                                <button onclick="deleteTask('${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/40 hover:text-red-500 dark:hover:text-red-400 transition-colors"><i class="fas fa-trash text-xs"></i></button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="flex items-center gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-3">
-                                            ${task.time ? `<span class="flex items-center gap-1 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-slate-600 dark:text-slate-300"><i class="far fa-clock"></i> ${task.time}</span>` : ''}
-                                            ${task.subtasks?.length ? `<span class="flex items-center gap-1"><i class="fas fa-list-ul"></i> ${task.subtasks.filter(s => s.completed).length}/${task.subtasks.length}</span>` : ''}
-                                        </div>
-
-                                        ${task.subtasks?.length ? `
-                                            <div class="space-y-2 mt-2">
-                                                ${task.subtasks.map((s, idx) => `
-                                                    <label class="flex items-start gap-2.5 group/sub cursor-pointer">
-                                                        <input type="checkbox" onchange="toggleSubtaskMain('${task.id}', ${idx})" ${s.completed ? 'checked' : ''} class="mt-0.5 shrink-0">
-                                                        <span class="text-sm text-slate-600 dark:text-slate-400 transition-colors group-hover/sub:text-slate-900 dark:group-hover/sub:text-slate-200 ${s.completed ? 'line-through !text-slate-400 dark:!text-slate-500' : ''}">${s.text}</span>
-                                                    </label>
-                                                `).join('')}
-                                            </div>
-                                        ` : ''}
-                                    </div>
-                                </div>
+                    <div class="flex items-center gap-2">
+                        <div class="hidden sm:flex flex-col items-end mr-3 w-16">
+                            <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mb-1">${progress}%</span>
+                            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-indigo-500 transition-all" style="width: ${progress}%"></div>
                             </div>
-                            `;
-                        }).join('')}
+                        </div>
+                        <button onclick="openTaskModal('${list.id}')" class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-colors">
+                            <i class="fas fa-plus text-sm"></i>
+                        </button>
+                        <button onclick="deleteList('${list.id}')" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
                     </div>
                 </div>
-                `;
-            }).join('');
+                
+                <div class="${list.collapsed ? 'hidden-section' : ''} divide-y divide-slate-100 dark:divide-slate-700/50">
+                    ${listTasks.length === 0 ? '<div class="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No tasks added yet.</div>' : ''}
+                    ${listTasks.map(task => {
+                        let badgeHTML = '';
+                        if (task.priority === 3) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-fire-flame-curved text-[9px]"></i> High</span>`;
+                        else if (task.priority === 1) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-arrow-down text-[9px]"></i> Low</span>`;
+                        
+                        // Set up timer state
+                        let timerState = activeTimers[task.id];
+                        if(!timerState && task.time) {
+                            timerState = { isPlaying: false, remainingSec: task.time * 60 };
+                        }
+
+                        return `
+                        <div class="task-card group relative p-5 bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                            <div class="flex items-start gap-4">
+                                <button onclick="toggleTaskStatus('${task.id}', ${task.completed})" class="mt-0.5 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${task.completed ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-500 text-transparent hover:border-indigo-400'}">
+                                    <i class="fas fa-check text-[10px]"></i>
+                                </button>
+                                <div class="flex-grow min-w-0">
+                                    <div class="flex justify-between items-start mb-1.5 gap-2">
+                                        <div class="flex flex-wrap items-center">
+                                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 transition-colors ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</p>
+                                            ${!task.completed ? badgeHTML : ''}
+                                        </div>
+                                        <div class="task-actions opacity-0 flex items-center gap-1 shrink-0">
+                                            <button onclick="openTaskModal('${list.id}', '${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="fas fa-pen text-xs"></i></button>
+                                            <button onclick="deleteTask('${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/40 hover:text-red-500 dark:hover:text-red-400 transition-colors"><i class="fas fa-trash text-xs"></i></button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex flex-wrap items-center gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
+                                        ${task.subtasks?.length ? `<span class="flex items-center gap-1"><i class="fas fa-list-ul"></i> ${task.subtasks.filter(s => s.completed).length}/${task.subtasks.length} subtasks</span>` : ''}
+                                    </div>
+
+                                    ${task.time && !task.completed ? `
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <div class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-lg flex items-center gap-1.5 font-mono text-xs font-bold border border-indigo-100 dark:border-indigo-800/50">
+                                                <i class="fas fa-hourglass-half"></i>
+                                                <span id="timer-display-${task.id}">${formatTime(timerState ? timerState.remainingSec : task.time * 60)}</span>
+                                            </div>
+                                            <button id="timer-btn-${task.id}" onclick="toggleTimer('${task.id}', ${task.time})" class="w-7 h-7 flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-indigo-600 dark:text-indigo-400 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/40 shadow-sm transition-colors">
+                                                ${timerState && timerState.isPlaying ? '<i class="fas fa-pause text-[10px]"></i>' : '<i class="fas fa-play text-[10px] ml-0.5"></i>'}
+                                            </button>
+                                        </div>
+                                    ` : task.time && task.completed ? `
+                                        <span class="inline-flex items-center gap-1 text-[11px] text-slate-400"><i class="far fa-clock"></i> ${task.time} min est.</span>
+                                    ` : ''}
+
+                                    ${task.subtasks?.length ? `
+                                        <div class="space-y-2 mt-3">
+                                            ${task.subtasks.map((s, idx) => `
+                                                <label class="flex items-start gap-2.5 group/sub cursor-pointer">
+                                                    <input type="checkbox" onchange="toggleSubtaskMain('${task.id}', ${idx})" ${s.completed ? 'checked' : ''} class="mt-0.5 shrink-0">
+                                                    <span class="text-sm text-slate-600 dark:text-slate-400 transition-colors group-hover/sub:text-slate-900 dark:group-hover/sub:text-slate-200 ${s.completed ? 'line-through !text-slate-400 dark:!text-slate-500' : ''}">${s.text}</span>
+                                                </label>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                    
+                    <!-- Notes & Rating Block -->
+                    <div class="border-t border-slate-100 dark:border-slate-700 p-5 bg-slate-50/30 dark:bg-slate-800/30 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Day Rating</span>
+                            <div class="flex gap-1 text-lg">
+                                ${stars}
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Experience Note</span>
+                            <textarea onblur="saveDayNote('${list.id}', this.value)" class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-700 dark:text-slate-200 placeholder-slate-400 resize-none shadow-sm" rows="2" placeholder="How was your day? Write your experience...">${list.note || ''}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            `;
+        }
+
+        function renderTodoLists() {
+            if(lists.length === 0) {
+                hide('page-alldays');
+                if(activePage === 'alldays') {
+                    show('emptyState');
+                    getEl('allDaysContainer').innerHTML = "";
+                }
+            } else {
+                hide('emptyState');
+            }
+
+            const todayStr = new Date().toLocaleDateString('en-CA');
+
+            if(activePage === 'todo') {
+                const container = getEl('todayContainer');
+                const todayList = lists.find(l => l.date === todayStr);
+                if(todayList) {
+                    const listTasks = tasks.filter(t => t.listId === todayList.id);
+                    container.innerHTML = generateListHTML(todayList, listTasks);
+                } else {
+                    container.innerHTML = `
+                    <div class="text-center py-16 bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 transition-colors">
+                        <div class="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl"><i class="fas fa-sun"></i></div>
+                        <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200">No list for today</h3>
+                        <p class="text-slate-500 text-sm mt-1 mb-4">You haven't planned your day yet.</p>
+                        <button onclick="startTodayList()" class="text-indigo-600 dark:text-indigo-400 font-semibold text-sm hover:underline">Start Today's Workspace</button>
+                    </div>`;
+                }
+            }
+            
+            if(activePage === 'alldays') {
+                const container = getEl('allDaysContainer');
+                const sortedLists = [...lists].sort((a, b) => new Date(b.date) - new Date(a.date));
+                container.innerHTML = sortedLists.map(list => {
+                    const listTasks = tasks.filter(t => t.listId === list.id);
+                    return generateListHTML(list, listTasks);
+                }).join('');
+            }
         }
 
         // Dashboard & Analytics
         function updateDashboard() {
             if(!currentUser) return;
             const todayStr = new Date().toLocaleDateString('en-CA');
-            const todayTasks = tasks.filter(t => lists.find(l => l.id === t.listId)?.date === todayStr);
+            
+            // Only count today's tasks for "Pending Today"
+            const todayList = lists.find(l => l.date === todayStr);
+            const todayTasks = todayList ? tasks.filter(t => t.listId === todayList.id) : [];
+            
             const todayDone = todayTasks.filter(t => t.completed).length;
             const todayPercent = todayTasks.length ? Math.round((todayDone / todayTasks.length) * 100) : 0;
 
             getEl('todayPercent').innerText = `${todayPercent}%`;
             getEl('todayProgressFill').style.width = `${todayPercent}%`;
-            getEl('totalTasks').innerText = tasks.filter(t => !t.completed).length;
+            
+            // Pending tasks ONLY for today
+            getEl('totalTasks').innerText = todayTasks.filter(t => !t.completed).length;
 
             const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
             const weekly = tasks.filter(t => {
@@ -857,7 +1038,9 @@
             getEl('weeklyStats').innerText = `${weekly.filter(t => t.completed).length} / ${weekly.length}`;
             getEl('currentDateDisplay').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
             
-            renderChart();
+            if (activePage === 'dashboard') {
+                renderChart();
+            }
         }
 
         function renderChart() {
@@ -866,12 +1049,13 @@
             for(let i=6; i>=0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 const ds = d.toLocaleDateString('en-CA');
-                labels.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
+                // Updated to show detailed date in chart
+                labels.push(d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }));
                 data.push(tasks.filter(t => lists.find(l => l.id === t.listId)?.date === ds && t.completed).length);
             }
 
             const isDark = document.documentElement.classList.contains('dark');
-            const textColor = isDark ? '#94a3b8' : '#94a3b8';
+            const textColor = isDark ? '#94a3b8' : '#64748b';
             const gridColor = isDark ? '#334155' : '#f1f5f9';
 
             if (progressionChart) progressionChart.destroy();
@@ -905,7 +1089,7 @@
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { font: { family: "'Inter', sans-serif", size: 12 }, color: textColor }
+                            ticks: { font: { family: "'Inter', sans-serif", size: 11 }, color: textColor }
                         }
                     },
                     interaction: {
@@ -938,8 +1122,6 @@
             setTimeout(() => t.classList.remove('translate-y-20'), 50);
             setTimeout(() => { t.classList.add('translate-y-20'); setTimeout(() => t.remove(), 300); }, 3000);
         }
-        
-        //CREATED BY TABREZ 
     </script>
 </body>
 </html>
