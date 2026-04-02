@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <link rel="icon" type="image/png" href="logo.png">
-
-<link rel="apple-touch-icon" href="logo.png">
-
-<link rel="shortcut icon" href="logo.png" type="image/x-icon">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="shortcut icon" href="logo.png" type="image/x-icon">
     <title>TRez Task Pro - Dashboard & TODO</title>
-  
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Configure Tailwind for Dark Mode -->
     <script>
@@ -75,8 +72,11 @@
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
-        /* Task Hover Effects */
-        .task-card { transition: all 0.2s ease-in-out; }
+        /* Task Hover Effects & Card Base */
+        .task-card { 
+            transition: all 0.2s ease-in-out; 
+            border-left-width: 4px;
+        }
         .task-card:hover .task-actions { opacity: 1; transform: translateX(0); }
         .task-actions { transform: translateX(10px); transition: all 0.2s ease-in-out; }
         
@@ -153,7 +153,7 @@
                     <i class="fas fa-check-double text-white text-2xl"></i>
                 </div>
                 <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight" id="authTitle">TRez Task Pro</h1>
-                <p class="text-slate-500 dark:text-slate-400 mt-3 text-sm" id="authSubtitle">Master your time, achieve your goals. 🎯</p>
+                <p class="text-slate-500 dark:text-slate-400 mt-3 text-sm flex items-center justify-center gap-2" id="authSubtitle">Master your time, achieve your goals. <i class="fas fa-bullseye text-indigo-500"></i></p>
             </div>
 
             <form id="authForm" class="space-y-5">
@@ -195,15 +195,18 @@
         
         <!-- Mobile Top Bar -->
         <div class="md:hidden flex items-center justify-between p-4 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-[60]">
-            <div class="flex items-center gap-2">
-                <div class="bg-indigo-600 w-8 h-8 rounded-lg text-white flex items-center justify-center shadow-sm">
-                    <i class="fas fa-check-double text-xs"></i>
+            <button onclick="toggleMobileMenu()" class="text-slate-500 dark:text-slate-400 text-xl focus:outline-none w-8 flex justify-start">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="flex items-center justify-center gap-2 flex-1">
+                <div class="bg-indigo-600 w-7 h-7 rounded-lg text-white flex items-center justify-center shadow-sm">
+                    <i class="fas fa-check-double text-[10px]"></i>
                 </div>
                 <span class="font-bold text-lg text-slate-900 dark:text-white tracking-tight">TRezTask.</span>
             </div>
-            <button onclick="toggleMobileMenu()" class="text-slate-500 dark:text-slate-400 text-xl focus:outline-none">
-                <i class="fas fa-bars"></i>
-            </button>
+
+            <div class="w-8"></div>
         </div>
 
         <!-- Mobile Overlay -->
@@ -257,7 +260,9 @@
                 <!-- Dashboard Page -->
                 <div id="page-dashboard" class="space-y-8 max-w-6xl mx-auto fade-in-up">
                     <header class="flex flex-col gap-1">
-                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">Welcome back, <span id="displayUsername" class="text-indigo-600 dark:text-indigo-400">User</span> 👋</h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                            Welcome back, <span id="displayUsername" class="text-indigo-600 dark:text-indigo-400">User</span> <i class="fas fa-hand-sparkles text-amber-400 text-3xl"></i>
+                        </h2>
                         <p class="text-slate-500 dark:text-slate-400 text-sm font-medium" id="currentDateDisplay"></p>
                     </header>
 
@@ -339,13 +344,23 @@
 
                     <div id="allDaysContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
                         <!-- Dynamic Historic Days -->
+                     
+                    </div>
+                   <div id="paginationControls" class="hidden-section flex justify-center items-center gap-4 mt-8 pb-4 fade-in-up">
+                        <button onclick="changePage(-1)" id="prevPageBtn" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm">
+                            <i class="fas fa-chevron-left mr-1"></i> Prev
+                        </button>
+                        <span id="pageIndicator" class="text-sm font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700/50 px-3 py-1.5 rounded-lg">Page 1</span>
+                        <button onclick="changePage(1)" id="nextPageBtn" class="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm">
+                            Next <i class="fas fa-chevron-right ml-1"></i>
+                        </button>
                     </div>
                     
                     <div id="emptyState" class="text-center py-20 hidden-section bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-600 transition-colors">
                         <div class="w-20 h-20 bg-slate-50 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-clipboard-list text-3xl text-slate-300 dark:text-slate-500"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200">Clean Slate ✨</h3>
+                        <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 flex items-center justify-center gap-2">Clean Slate <i class="fas fa-broom text-amber-500"></i></h3>
                         <p class="text-slate-500 dark:text-slate-400 mt-1 text-sm">You haven't planned any days yet.</p>
                     </div>
                 </div>
@@ -357,7 +372,7 @@
     <!-- Modals -->
     <!-- Profile & Settings Modal -->
     <div id="profileModal" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 md:p-6 hidden-section transition-opacity">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl shadow-2xl flex flex-col overflow-hidden fade-in-up transition-colors">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl shadow-2xl flex flex-col overflow-hidden fade-in-up transition-colors max-h-screen overflow-y-auto">
             <div class="p-6 pb-0 flex justify-end">
                  <button onclick="closeProfileModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">
                     <i class="fas fa-times text-lg"></i>
@@ -384,8 +399,8 @@
 
                 <!-- Settings Block -->
                 <div class="pt-2">
-                    <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1">App Settings ⚙️</h4>
-                    <div class="bg-white dark:bg-slate-700 rounded-2xl border border-slate-200 dark:border-slate-600 shadow-sm overflow-hidden">
+                    <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 px-1 flex items-center gap-2">App Settings <i class="fas fa-cog text-slate-400"></i></h4>
+                    <div class="bg-white dark:bg-slate-700 rounded-2xl border border-slate-200 dark:border-slate-600 shadow-sm overflow-hidden mb-4">
                         <div class="flex items-center justify-between p-4 cursor-pointer" id="themeToggleBtn">
                             <div class="flex items-center gap-3">
                                 <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-600 flex items-center justify-center text-slate-600 dark:text-slate-200">
@@ -399,6 +414,27 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Keyboard Shortcuts Guide -->
+                    <div class="bg-white dark:bg-slate-700 rounded-2xl border border-slate-200 dark:border-slate-600 shadow-sm overflow-hidden">
+                        <button onclick="document.getElementById('shortcutsList').classList.toggle('hidden-section')" class="flex items-center justify-between w-full p-4 text-left focus:outline-none hover:bg-slate-50 dark:hover:bg-slate-600/50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-600 flex items-center justify-center text-slate-600 dark:text-slate-200">
+                                    <i class="fas fa-keyboard"></i>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">Keyboard Shortcuts</span>
+                            </div>
+                            <i class="fas fa-chevron-down text-slate-400 text-xs"></i>
+                        </button>
+                        <div id="shortcutsList" class="hidden-section p-4 pt-0 space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
+                            <div class="flex justify-between items-center border-t border-slate-100 dark:border-slate-600 pt-3"><span>Add New Task</span><kbd class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-mono shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">Alt + N</kbd></div>
+                            <div class="flex justify-between items-center"><span>Go to Dashboard</span><kbd class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-mono shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">Alt + D</kbd></div>
+                            <div class="flex justify-between items-center"><span>Go to Today</span><kbd class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-mono shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">Alt + T</kbd></div>
+                            <div class="flex justify-between items-center"><span>Go to All Days</span><kbd class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-mono shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">Alt + A</kbd></div>
+                            <div class="flex justify-between items-center"><span>Open Settings</span><kbd class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-mono shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">Alt + S</kbd></div>
+                            <div class="flex justify-between items-center"><span>Close Modals</span><kbd class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-mono shadow-sm border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300">Esc</kbd></div>
+                        </div>
+                    </div>
                 </div>
 
                 <button id="logoutBtnModal" class="w-full bg-white dark:bg-slate-700 border border-red-100 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-2xl flex items-center justify-center gap-2 transition-colors font-medium shadow-sm">
@@ -406,7 +442,7 @@
                 </button>
             </div>
             <div class="p-4 text-center bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
-                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wide">TRezTask Pro v2.0.0 &bull; Updated Timer Edition</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wide">TRezTask Pro v2.1.0 &bull; Productivity Edition</p>
             </div>
         </div>
     </div>
@@ -415,7 +451,7 @@
     <div id="taskModal" class="fixed inset-0 bg-slate-900/40 dark:bg-slate-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 md:p-6 hidden-section transition-opacity">
         <div class="bg-white dark:bg-slate-800 w-full max-w-xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] fade-in-up transition-colors">
             <div class="p-6 md:p-8 pb-4 flex justify-between items-center border-b border-slate-100 dark:border-slate-700">
-                <h3 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight" id="modalTitle">Define your task ✨</h3>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-2" id="modalTitle">Define your task <i class="fas fa-wand-magic-sparkles text-indigo-500"></i></h3>
                 <button onclick="closeTaskModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-700">
                     <i class="fas fa-times"></i>
                 </button>
@@ -434,9 +470,9 @@
                         <div class="relative">
                             <i class="fas fa-flag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
                             <select id="taskPriority" class="w-full pl-11 pr-10 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-700 dark:text-white appearance-none cursor-pointer">
-                                <option value="3">🔥 High Priority</option>
-                                <option value="2" selected>✨ Normal Priority</option>
-                                <option value="1">💤 Low Priority</option>
+                                <option value="3">High Priority</option>
+                                <option value="2" selected>Normal Priority</option>
+                                <option value="1">Low Priority</option>
                             </select>
                             <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                         </div>
@@ -446,10 +482,25 @@
                         <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Est. Time (Minutes)</label>
                         <div class="relative">
                             <i class="far fa-clock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"></i>
-                            <!-- Updated to type number for timer functionality -->
                             <input type="number" id="taskTime" placeholder="e.g. 45" min="1" class="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium dark:text-white placeholder:text-slate-400">
                         </div>
                     </div>
+                </div>
+
+                <!-- Custom Task Color Picker -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Task Color</label>
+                    <div class="flex flex-wrap gap-3 items-center" id="colorPickerContainer">
+                        <button type="button" data-color="red" class="color-picker-btn w-8 h-8 rounded-full bg-red-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="orange" class="color-picker-btn w-8 h-8 rounded-full bg-orange-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="yellow" class="color-picker-btn w-8 h-8 rounded-full bg-yellow-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="green" class="color-picker-btn w-8 h-8 rounded-full bg-green-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="blue" class="color-picker-btn w-8 h-8 rounded-full bg-blue-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="indigo" class="color-picker-btn w-8 h-8 rounded-full bg-indigo-500 ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="purple" class="color-picker-btn w-8 h-8 rounded-full bg-purple-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                        <button type="button" data-color="slate" class="color-picker-btn w-8 h-8 rounded-full bg-slate-500 ring-2 ring-transparent ring-offset-2 dark:ring-offset-slate-800 transition-all"></button>
+                    </div>
+                    <input type="hidden" id="taskColor" value="indigo">
                 </div>
 
                 <div class="pt-2">
@@ -489,7 +540,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, Timestamp, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const userFirebaseConfig = {
             apiKey: "AIzaSyB0jLiawN_C2FQyzDqCcGl83NC1qNp8nes",
@@ -514,11 +565,69 @@
         let editingTaskId = null;
         let progressionChart = null;
         let activePage = 'dashboard';
+      let currentAllDaysPage = 1;
+        const daysPerPage = 10;
         let activeTimers = {}; // Stores timer state { taskId: { remainingSec: number, isPlaying: boolean } }
+
+        // Color map for mapping standard strings to precise tailwind-compatible hex codes
+        const taskColors = {
+            red: '#ef4444',
+            orange: '#f97316',
+            yellow: '#eab308',
+            green: '#22c55e',
+            blue: '#3b82f6',
+            indigo: '#6366f1',
+            purple: '#a855f7',
+            slate: '#64748b'
+        };
 
         const getEl = (id) => document.getElementById(id);
         const show = (id) => getEl(id).classList.remove('hidden-section');
         const hide = (id) => getEl(id).classList.add('hidden-section');
+
+        // Keyboard Shortcuts Logic
+        window.addEventListener('keydown', (e) => {
+            // Ignore if typing in an input/textarea
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                if (e.key === 'Escape') {
+                    closeTaskModal();
+                    closeSectionModal();
+                    closeProfileModal();
+                    e.target.blur();
+                }
+                return;
+            }
+
+            // Close modals on Escape globally
+            if (e.key === 'Escape') {
+                closeTaskModal();
+                closeSectionModal();
+                closeProfileModal();
+            }
+
+            // Alt + Key combinations
+            if (e.altKey && currentUser) {
+                switch(e.key.toLowerCase()) {
+                    case 'n': 
+                        e.preventDefault();
+                        const todayStr = new Date().toLocaleDateString('en-CA');
+                        const todayList = lists.find(l => l.date === todayStr);
+                        if (activeListId && !getEl('page-alldays').classList.contains('hidden-section')) {
+                            openTaskModal(activeListId);
+                        } else if (todayList) {
+                            showPage('todo');
+                            openTaskModal(todayList.id);
+                        } else {
+                            showToast("Start Today's workspace first!", "info");
+                        }
+                        break;
+                    case 'd': e.preventDefault(); showPage('dashboard'); break;
+                    case 't': e.preventDefault(); showPage('todo'); break;
+                    case 'a': e.preventDefault(); showPage('alldays'); break;
+                    case 's': e.preventDefault(); openProfileModal(); break;
+                }
+            }
+        });
 
         // Mobile Nav Logic
         window.toggleMobileMenu = () => {
@@ -532,14 +641,25 @@
             }
         };
 
-        // Dark Theme Logic
-        const toggleTheme = () => {
+        // Dark Theme Logic (Sync to Firebase)
+        const toggleTheme = async () => {
             const html = document.documentElement;
             html.classList.toggle('dark');
             const isDark = html.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            const themeVal = isDark ? 'dark' : 'light';
+            
+            localStorage.setItem('theme', themeVal);
+            
             if (activePage === 'dashboard') {
                 renderChart();
+            }
+
+            // Save preference to Firebase for the user
+            if (currentUser) {
+                try {
+                    const prefRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'settings', 'preferences');
+                    await setDoc(prefRef, { theme: themeVal }, { merge: true });
+                } catch(e) { console.error("Error saving theme to cloud:", e); }
             }
         };
 
@@ -574,9 +694,15 @@
             if(page === 'dashboard') updateDashboard();
             if(page === 'todo' || page === 'alldays') renderTodoLists();
         };
+      window.changePage = (direction) => {
+            currentAllDaysPage += direction;
+            renderTodoLists();
+            // Smoothly scroll back to the top of the container when the page changes
+            document.getElementById('page-alldays').scrollIntoView({ behavior: 'smooth' });
+        };
 
         // Auth Logic
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             hide('loadingOverlay');
             if (user) {
@@ -586,6 +712,19 @@
                 getEl('displayUsername').innerText = name;
                 getEl('sideProfileName').innerText = name;
                 getEl('profileImg').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}&backgroundColor=e0e7ff`;
+                
+                // Fetch user theme preference
+                try {
+                    const prefRef = doc(db, 'artifacts', appId, 'users', user.uid, 'settings', 'preferences');
+                    const prefSnap = await getDoc(prefRef);
+                    if (prefSnap.exists() && prefSnap.data().theme) {
+                        const cloudTheme = prefSnap.data().theme;
+                        localStorage.setItem('theme', cloudTheme);
+                        if(cloudTheme === 'dark') document.documentElement.classList.add('dark');
+                        else document.documentElement.classList.remove('dark');
+                    }
+                } catch(e) { console.error("Could not fetch preferences", e); }
+
                 initData();
             } else {
                 show('authSection');
@@ -700,6 +839,21 @@
             await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'lists', id), { note });
         };
 
+        // Task Priority Color Picker Logic
+        const colorBtns = document.querySelectorAll('.color-picker-btn');
+        colorBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // remove active class/rings from all
+                colorBtns.forEach(b => {
+                    const c = b.dataset.color;
+                    b.className = b.className.replace(new RegExp(`ring-${c}-500`), 'ring-transparent');
+                });
+                // add active to clicked
+                btn.className = btn.className.replace('ring-transparent', `ring-${btn.dataset.color}-500`);
+                getEl('taskColor').value = btn.dataset.color;
+            });
+        });
+
         // Task Handling
         window.openTaskModal = (listId, taskId = null) => {
             activeListId = listId;
@@ -710,17 +864,39 @@
                 const task = tasks.find(t => t.id === taskId);
                 getEl('taskInput').value = task.title;
                 getEl('taskTime').value = task.time || "";
-                getEl('taskPriority').value = task.priority || 2; 
+                getEl('taskPriority').value = task.priority || 2;
+                
+                // Color mapping
+                const defaultColor = task.color || 'indigo';
+                getEl('taskColor').value = defaultColor;
+                colorBtns.forEach(b => {
+                    const c = b.dataset.color;
+                    if (c === defaultColor) {
+                        b.className = b.className.replace('ring-transparent', `ring-${c}-500`);
+                    } else {
+                        b.className = b.className.replace(new RegExp(`ring-${c}-500`), 'ring-transparent');
+                    }
+                });
+
                 task.subtasks?.forEach(s => addSubtaskField(s.text, s.completed));
-                getEl('modalTitle').innerText = "Refine your task ✍️";
+                getEl('modalTitle').innerHTML = `Refine your task <i class="fas fa-pen-nib text-indigo-500 ml-2"></i>`;
             } else {
                 getEl('taskInput').value = "";
                 getEl('taskTime').value = "";
                 getEl('taskPriority').value = 2;
-                getEl('modalTitle').innerText = "Define your task ✨";
+                
+                // Reset Color to Indigo
+                getEl('taskColor').value = 'indigo';
+                colorBtns.forEach(b => {
+                    const c = b.dataset.color;
+                    if (c === 'indigo') b.className = b.className.replace('ring-transparent', `ring-indigo-500`);
+                    else b.className = b.className.replace(new RegExp(`ring-${c}-500`), 'ring-transparent');
+                });
+
+                getEl('modalTitle').innerHTML = `Define your task <i class="fas fa-wand-magic-sparkles text-indigo-500 ml-2"></i>`;
             }
             show('taskModal');
-            getEl('taskInput').focus();
+            setTimeout(() => getEl('taskInput').focus(), 100);
         };
 
         window.closeTaskModal = () => hide('taskModal');
@@ -747,7 +923,8 @@
             })).filter(s => s.text !== "");
 
             const priority = parseInt(getEl('taskPriority').value) || 2;
-            const timeMinutes = parseInt(getEl('taskTime').value) || null; // Only store numeric minutes
+            const timeMinutes = parseInt(getEl('taskTime').value) || null; 
+            const color = getEl('taskColor').value || 'indigo';
 
             const data = {
                 title,
@@ -755,6 +932,7 @@
                 subtasks,
                 listId: activeListId,
                 priority: priority,
+                color: color,
                 completed: editingTaskId ? tasks.find(t => t.id === editingTaskId).completed : false,
                 updatedAt: Timestamp.now()
             };
@@ -793,7 +971,6 @@
             }
         };
 
-        // Custom function to get time value for sorting securely
         const getCreationTimeMs = (timestampField) => {
             if (!timestampField) return 0;
             if (typeof timestampField.toMillis === 'function') return timestampField.toMillis();
@@ -813,7 +990,7 @@
             timer.isPlaying = !timer.isPlaying;
             
             const btn = getEl(`timer-btn-${taskId}`);
-            if(btn) btn.innerHTML = timer.isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+            if(btn) btn.innerHTML = timer.isPlaying ? '<i class="fas fa-pause text-[10px]"></i>' : '<i class="fas fa-play text-[10px] ml-0.5"></i>';
         };
 
         function formatTime(sec) {
@@ -832,14 +1009,13 @@
 
                     if (timer.remainingSec <= 0) {
                         timer.isPlaying = false;
-                        showToast("Task time is up! ⏰", 'info');
+                        showToast("Task time is up! <i class='fas fa-clock'></i>", 'info');
                         const btn = getEl(`timer-btn-${taskId}`);
-                        if(btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+                        if(btn) btn.innerHTML = '<i class="fas fa-play text-[10px] ml-0.5"></i>';
                     }
                 }
             }
         }, 1000);
-
 
         // UI Rendering
         function generateListHTML(list, listTasks) {
@@ -847,8 +1023,8 @@
             listTasks.sort((a, b) => {
                 const priorityA = a.priority || 2;
                 const priorityB = b.priority || 2;
-                if (priorityA !== priorityB) return priorityB - priorityA; 
-                return getCreationTimeMs(b.createdAt) - getCreationTimeMs(a.createdAt);
+                if (priorityA !== priorityB) return priorityB - priorityA;
+                 return getCreationTimeMs(b.createdAt) - getCreationTimeMs(a.createdAt);
             });
 
             const completed = listTasks.filter(t => t.completed).length;
@@ -895,6 +1071,9 @@
                         if (task.priority === 3) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-fire-flame-curved text-[9px]"></i> High</span>`;
                         else if (task.priority === 1) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-arrow-down text-[9px]"></i> Low</span>`;
                         
+                        // Assign visual color
+                        const colorHex = taskColors[task.color || 'indigo'];
+
                         // Set up timer state
                         let timerState = activeTimers[task.id];
                         if(!timerState && task.time) {
@@ -902,7 +1081,7 @@
                         }
 
                         return `
-                        <div class="task-card group relative p-5 bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                        <div class="task-card group relative p-5 bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors" style="border-left-color: ${colorHex};">
                             <div class="flex items-start gap-4">
                                 <button onclick="toggleTaskStatus('${task.id}', ${task.completed})" class="mt-0.5 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${task.completed ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-500 text-transparent hover:border-indigo-400'}">
                                     <i class="fas fa-check text-[10px]"></i>
@@ -1005,10 +1184,35 @@
             if(activePage === 'alldays') {
                 const container = getEl('allDaysContainer');
                 const sortedLists = [...lists].sort((a, b) => new Date(b.date) - new Date(a.date));
-                container.innerHTML = sortedLists.map(list => {
+                
+                // --- NEW PAGINATION LOGIC ---
+                const totalPages = Math.ceil(sortedLists.length / daysPerPage);
+                
+                // Safety checks to ensure we stay within valid page bounds
+                if (currentAllDaysPage > totalPages && totalPages > 0) currentAllDaysPage = totalPages;
+                if (currentAllDaysPage < 1) currentAllDaysPage = 1;
+
+                // Slice the array to get only the items for the current page
+                const startIndex = (currentAllDaysPage - 1) * daysPerPage;
+                const endIndex = startIndex + daysPerPage;
+                const paginatedLists = sortedLists.slice(startIndex, endIndex);
+
+                // Render only the paginated items
+                container.innerHTML = paginatedLists.map(list => {
                     const listTasks = tasks.filter(t => t.listId === list.id);
                     return generateListHTML(list, listTasks);
                 }).join('');
+
+                // Update UI for the pagination buttons
+                const pagControls = getEl('paginationControls');
+                if (totalPages > 1) {
+                    pagControls.classList.remove('hidden-section');
+                    getEl('pageIndicator').innerText = `Page ${currentAllDaysPage} of ${totalPages}`;
+                    getEl('prevPageBtn').disabled = currentAllDaysPage === 1;
+                    getEl('nextPageBtn').disabled = currentAllDaysPage === totalPages;
+                } else {
+                    pagControls.classList.add('hidden-section'); // Hide if only 1 page
+                }
             }
         }
 
