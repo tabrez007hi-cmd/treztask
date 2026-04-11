@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -318,7 +319,9 @@
                     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
                         <div>
                             <h2 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Today's Tasks <i class="fa-regular fa-clipboard ml-1"></i></h2>
-                            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Conquer the day, step by step.</p>
+                            <p id="aiMotivationText" class="text-slate-500 dark:text-slate-400 text-sm mt-2 font-medium flex items-center gap-2 transition-all">
+            <i class="fas fa-robot text-indigo-400"></i> <span class="ai-text">Analyzing your performance...</span>
+        </p>
                         </div>
                         <button onclick="startTodayList()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl transition-colors shadow-sm flex items-center gap-2 font-medium text-sm whitespace-nowrap">
                             <i class="fas fa-bolt"></i> <span>Start Today</span>
@@ -442,7 +445,7 @@
                 </button>
             </div>
             <div class="p-4 text-center bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700">
-                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wide">TRezTask Pro v2.1.0 &bull; Made By Tabrez</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wide">TRezTask Pro v2.2.0 &bull; Made By Tabrez</p>
             </div>
         </div>
     </div>
@@ -532,6 +535,36 @@
             <div class="flex gap-3">
                 <button onclick="closeSectionModal()" class="flex-1 py-3 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl transition-colors border border-transparent">Cancel</button>
                 <button onclick="saveSection()" class="flex-1 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 shadow-sm transition-colors">Create List</button>
+            </div>
+        </div>
+    </div>
+  <div id="focusModeOverlay" class="fixed inset-0 bg-slate-900 z-[300] hidden-section flex flex-col items-center justify-center text-white transition-opacity duration-300">
+        <button onclick="exitFocusMode()" class="absolute top-6 left-6 text-slate-400 hover:text-white transition-colors flex items-center gap-2 font-medium bg-slate-800 px-4 py-2 rounded-xl shadow-sm">
+            <i class="fas fa-arrow-left"></i> Exit Focus
+        </button>
+        
+        <div class="flex flex-col items-center max-w-3xl px-6 w-full fade-in-up">
+            <span id="focusTaskColorBadge" class="mb-6 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border bg-opacity-10">
+                <i class="fas fa-circle text-[8px]"></i> <span id="focusTaskColorText">Color</span>
+            </span>
+            
+            <h2 id="focusTaskTitle" class="text-3xl md:text-5xl font-bold mb-12 text-center leading-tight">Task Title</h2>
+            
+            <div class="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center mb-12 drop-shadow-2xl">
+                <svg class="absolute inset-0 w-full h-full transform -rotate-90">
+                    <circle cx="50%" cy="50%" r="46%" fill="none" stroke="#334155" stroke-width="8" />
+                    <circle id="focusTimerCircle" cx="50%" cy="50%" r="46%" fill="none" stroke="#6366f1" stroke-width="8" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0" stroke-linecap="round" class="transition-all duration-1000 ease-linear" />
+                </svg>
+                <div id="focusTimerDisplay" class="text-6xl md:text-7xl font-mono font-bold tracking-tighter text-white">25:00</div>
+            </div>
+            
+            <div class="flex gap-4">
+                <button onclick="toggleFocusTimer()" id="focusTimerToggleBtn" class="bg-indigo-600 hover:opacity-80 text-white w-16 h-16 rounded-2xl flex items-center justify-center text-2xl transition-all shadow-lg hover:scale-105 active:scale-95">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button onclick="completeTaskInFocus()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-0 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 flex items-center gap-2 text-lg hover:scale-105 active:scale-95">
+                    <i class="fas fa-check-double"></i> Complete
+                </button>
             </div>
         </div>
     </div>
@@ -951,11 +984,20 @@
         });
 
         window.toggleTaskStatus = async (id, status) => {
-            await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), { completed: !status });
-            if(!status && activeTimers[id]) {
-                activeTimers[id].isPlaying = false; // Stop timer if task gets completed
-            }
-        };
+    // Determine the new status and completion time ⏱️
+    const updateData = { completed: !status };
+    if (!status) {
+        updateData.completedAt = Timestamp.now(); // Mark the completion time
+    } else {
+        updateData.completedAt = null; // Clear if unchecked
+    }
+
+    await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', id), updateData);
+    
+    if(!status && activeTimers[id]) {
+        activeTimers[id].isPlaying = false; // Stop timer if task gets completed
+    }
+};
 
         window.toggleSubtaskMain = async (taskId, subtaskIdx) => {
             const task = tasks.find(t => t.id === taskId);
@@ -992,6 +1034,51 @@
             const btn = getEl(`timer-btn-${taskId}`);
             if(btn) btn.innerHTML = timer.isPlaying ? '<i class="fas fa-pause text-[10px]"></i>' : '<i class="fas fa-play text-[10px] ml-0.5"></i>';
         };
+      // --- EDIT TIMER LOGIC ⏱️ ---
+        window.editTaskTime = async (taskId) => {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const currentMin = task.time || 25;
+            const input = prompt(`Enter new estimated time in minutes for "${task.title}":`, currentMin);
+            
+            if (input === null || input.trim() === "") return; // Cancelled by user
+            
+            const newMin = parseInt(input, 10);
+            if (isNaN(newMin) || newMin <= 0) {
+                showToast("Please enter a valid positive number for minutes.", "error");
+                return;
+            }
+
+            try {
+                // 1. Save new time to Firebase
+                await updateDoc(doc(db, 'artifacts', appId, 'users', currentUser.uid, 'tasks', taskId), {
+                    time: newMin
+                });
+                
+                // 2. Update active timer state immediately
+                if (activeTimers[taskId]) {
+                    activeTimers[taskId].remainingSec = newMin * 60;
+                } else {
+                    activeTimers[taskId] = { isPlaying: false, remainingSec: newMin * 60 };
+                }
+
+                // 3. Update the UI Text
+                const displayEl = document.getElementById(`timer-display-${taskId}`);
+                if (displayEl) displayEl.innerText = formatTime(newMin * 60);
+
+                // 4. Update Focus Mode if it's currently active on this specific task
+                if (currentFocusTaskId === taskId) {
+                    focusTotalSeconds = newMin * 60;
+                    updateFocusCircle();
+                }
+                
+                showToast("Timer updated successfully! ⏱️", "info");
+            } catch(e) {
+                console.error("Error updating timer:", e);
+                showToast("Failed to update timer", "error");
+            }
+        };
 
         function formatTime(sec) {
             const m = Math.floor(sec / 60).toString().padStart(2, '0');
@@ -1000,158 +1087,190 @@
         }
 
         // Global Timer Loop
+       // Global Timer Loop ⏱️
         setInterval(() => {
             for (const [taskId, timer] of Object.entries(activeTimers)) {
                 if (timer.isPlaying && timer.remainingSec > 0) {
                     timer.remainingSec--;
-                    const displayEl = getEl(`timer-display-${taskId}`);
+                    
+                    const displayEl = document.getElementById(`timer-display-${taskId}`);
                     if (displayEl) displayEl.innerText = formatTime(timer.remainingSec);
+
+                    // Update Focus mode if active
+                    if (currentFocusTaskId === taskId) updateFocusCircle();
 
                     if (timer.remainingSec <= 0) {
                         timer.isPlaying = false;
                         showToast("Task time is up! <i class='fas fa-clock'></i>", 'info');
-                        const btn = getEl(`timer-btn-${taskId}`);
+                        const btn = document.getElementById(`timer-btn-${taskId}`);
                         if(btn) btn.innerHTML = '<i class="fas fa-play text-[10px] ml-0.5"></i>';
+                        
+                        if (currentFocusTaskId === taskId) {
+                            document.getElementById('focusTimerToggleBtn').innerHTML = '<i class="fas fa-play ml-1"></i>';
+                        }
                     }
                 }
             }
         }, 1000);
-
+// Time Formatter Helper 🕒
+function formatTimeDisplay(timestampField) {
+    if (!timestampField) return '';
+    let date;
+    if (typeof timestampField.toDate === 'function') {
+        date = timestampField.toDate();
+    } else if (timestampField.seconds) {
+        date = new Date(timestampField.seconds * 1000);
+    } else if (timestampField instanceof Date) {
+        date = timestampField;
+    } else {
+        return '';
+    }
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
         // UI Rendering
         function generateListHTML(list, listTasks) {
-            // Sort tasks: Priority first, then newest
-            listTasks.sort((a, b) => {
-                const priorityA = a.priority || 2;
-                const priorityB = b.priority || 2;
-                if (priorityA !== priorityB) return priorityB - priorityA;
-                 return getCreationTimeMs(b.createdAt) - getCreationTimeMs(a.createdAt);
-            });
+    // Sort tasks: Priority first, then newest
+    listTasks.sort((a, b) => {
+        const priorityA = a.priority || 2;
+        const priorityB = b.priority || 2;
+        if (priorityA !== priorityB) return priorityB - priorityA;
+         return getCreationTimeMs(b.createdAt) - getCreationTimeMs(a.createdAt);
+    });
 
-            const completed = listTasks.filter(t => t.completed).length;
-            const progress = listTasks.length ? Math.round((completed / listTasks.length) * 100) : 0;
+    const completed = listTasks.filter(t => t.completed).length;
+    const progress = listTasks.length ? Math.round((completed / listTasks.length) * 100) : 0;
 
-            const stars = [1,2,3,4,5].map(star => `
-                <button onclick="rateDay('${list.id}', ${star})" class="transition-transform hover:scale-110 focus:outline-none">
-                    <i class="fas fa-star ${list.rating >= star ? 'text-yellow-400' : 'text-slate-300 dark:text-slate-600'}"></i>
-                </button>
-            `).join('');
+    // Build the stars array for the header ⭐
+    const stars = [1,2,3,4,5].map(star => `
+        <button onclick="event.stopPropagation(); rateDay('${list.id}', ${star})" class="transition-transform hover:scale-125 focus:outline-none">
+            <i class="fas fa-star ${list.rating >= star ? 'text-amber-400' : 'text-slate-300 dark:text-slate-600'}"></i>
+        </button>
+    `).join('');
 
-            return `
-            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-fit fade-in-up transition-colors">
-                <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700/80 transition-colors">
-                    <div class="flex items-center gap-4 cursor-pointer flex-grow" onclick="toggleListCollapse('${list.id}', ${list.collapsed})">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm transition-transform ${list.collapsed ? '-rotate-90' : ''}">
-                            <i class="fas fa-chevron-down text-xs"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${list.day}</h4>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">${list.date}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="hidden sm:flex flex-col items-end mr-3 w-16">
-                            <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mb-1">${progress}%</span>
-                            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                                <div class="h-full bg-indigo-500 transition-all" style="width: ${progress}%"></div>
-                            </div>
-                        </div>
-                        <button onclick="openTaskModal('${list.id}')" class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-colors">
-                            <i class="fas fa-plus text-sm"></i>
-                        </button>
-                        <button onclick="deleteList('${list.id}')" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
-                            <i class="fas fa-trash-alt text-xs"></i>
-                        </button>
-                    </div>
+    return `
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col h-fit fade-in-up transition-colors">
+        
+        <div class="p-5 border-b border-slate-100 dark:border-slate-700 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-700/80 transition-colors">
+            <div class="flex items-center gap-4 cursor-pointer flex-grow" onclick="toggleListCollapse('${list.id}', ${list.collapsed})">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm transition-transform ${list.collapsed ? '-rotate-90' : ''}">
+                    <i class="fas fa-chevron-down text-xs"></i>
                 </div>
-                
-                <div class="${list.collapsed ? 'hidden-section' : ''} divide-y divide-slate-100 dark:divide-slate-700/50">
-                    ${listTasks.length === 0 ? '<div class="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No tasks added yet.</div>' : ''}
-                    ${listTasks.map(task => {
-                        let badgeHTML = '';
-                        if (task.priority === 3) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-fire-flame-curved text-[9px]"></i> High</span>`;
-                        else if (task.priority === 1) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-arrow-down text-[9px]"></i> Low</span>`;
-                        
-                        // Assign visual color
-                        const colorHex = taskColors[task.color || 'indigo'];
-
-                        // Set up timer state
-                        let timerState = activeTimers[task.id];
-                        if(!timerState && task.time) {
-                            timerState = { isPlaying: false, remainingSec: task.time * 60 };
-                        }
-
-                        return `
-                        <div class="task-card group relative p-5 bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors" style="border-left-color: ${colorHex};">
-                            <div class="flex items-start gap-4">
-                                <button onclick="toggleTaskStatus('${task.id}', ${task.completed})" class="mt-0.5 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${task.completed ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-500 text-transparent hover:border-indigo-400'}">
-                                    <i class="fas fa-check text-[10px]"></i>
-                                </button>
-                                <div class="flex-grow min-w-0">
-                                    <div class="flex justify-between items-start mb-1.5 gap-2">
-                                        <div class="flex flex-wrap items-center">
-                                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 transition-colors ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</p>
-                                            ${!task.completed ? badgeHTML : ''}
-                                        </div>
-                                        <div class="task-actions opacity-0 flex items-center gap-1 shrink-0">
-                                            <button onclick="openTaskModal('${list.id}', '${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="fas fa-pen text-xs"></i></button>
-                                            <button onclick="deleteTask('${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/40 hover:text-red-500 dark:hover:text-red-400 transition-colors"><i class="fas fa-trash text-xs"></i></button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex flex-wrap items-center gap-3 text-[11px] font-medium text-slate-500 dark:text-slate-400 mb-2">
-                                        ${task.subtasks?.length ? `<span class="flex items-center gap-1"><i class="fas fa-list-ul"></i> ${task.subtasks.filter(s => s.completed).length}/${task.subtasks.length} subtasks</span>` : ''}
-                                    </div>
-
-                                    ${task.time && !task.completed ? `
-                                        <div class="flex items-center gap-2 mt-2">
-                                            <div class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-lg flex items-center gap-1.5 font-mono text-xs font-bold border border-indigo-100 dark:border-indigo-800/50">
-                                                <i class="fas fa-hourglass-half"></i>
-                                                <span id="timer-display-${task.id}">${formatTime(timerState ? timerState.remainingSec : task.time * 60)}</span>
-                                            </div>
-                                            <button id="timer-btn-${task.id}" onclick="toggleTimer('${task.id}', ${task.time})" class="w-7 h-7 flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-indigo-600 dark:text-indigo-400 rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/40 shadow-sm transition-colors">
-                                                ${timerState && timerState.isPlaying ? '<i class="fas fa-pause text-[10px]"></i>' : '<i class="fas fa-play text-[10px] ml-0.5"></i>'}
-                                            </button>
-                                        </div>
-                                    ` : task.time && task.completed ? `
-                                        <span class="inline-flex items-center gap-1 text-[11px] text-slate-400"><i class="far fa-clock"></i> ${task.time} min est.</span>
-                                    ` : ''}
-
-                                    ${task.subtasks?.length ? `
-                                        <div class="space-y-2 mt-3">
-                                            ${task.subtasks.map((s, idx) => `
-                                                <label class="flex items-start gap-2.5 group/sub cursor-pointer">
-                                                    <input type="checkbox" onchange="toggleSubtaskMain('${task.id}', ${idx})" ${s.completed ? 'checked' : ''} class="mt-0.5 shrink-0">
-                                                    <span class="text-sm text-slate-600 dark:text-slate-400 transition-colors group-hover/sub:text-slate-900 dark:group-hover/sub:text-slate-200 ${s.completed ? 'line-through !text-slate-400 dark:!text-slate-500' : ''}">${s.text}</span>
-                                                </label>
-                                            `).join('')}
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </div>
-                        </div>
-                        `;
-                    }).join('')}
-                    
-                    <!-- Notes & Rating Block -->
-                    <div class="border-t border-slate-100 dark:border-slate-700 p-5 bg-slate-50/30 dark:bg-slate-800/30 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Day Rating</span>
-                            <div class="flex gap-1 text-lg">
-                                ${stars}
-                            </div>
-                        </div>
-                        <div>
-                            <span class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Experience Note</span>
-                            <textarea onblur="saveDayNote('${list.id}', this.value)" class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-700 dark:text-slate-200 placeholder-slate-400 resize-none shadow-sm" rows="2" placeholder="How was your day? Write your experience...">${list.note || ''}</textarea>
+                <div>
+                    <div class="flex items-center gap-3">
+                        <h4 class="text-base font-bold text-slate-900 dark:text-white tracking-tight">${list.day}</h4>
+                        <div class="flex gap-1 text-sm bg-white dark:bg-slate-900 px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-600 shadow-sm" onclick="event.stopPropagation()">
+                            ${stars}
                         </div>
                     </div>
-
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium tracking-wide mt-1">${list.date}</p>
                 </div>
             </div>
-            `;
-        }
+            <div class="flex items-center gap-2">
+                <div class="hidden sm:flex flex-col items-end mr-3 w-16">
+                    <span class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 mb-1">${progress}%</span>
+                    <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-500 transition-all" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                <button onclick="openTaskModal('${list.id}')" class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 flex items-center justify-center hover:bg-indigo-600 hover:text-white transition-colors">
+                    <i class="fas fa-plus text-sm"></i>
+                </button>
+                <button onclick="deleteList('${list.id}')" class="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-400 hover:text-red-500 hover:border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+                    <i class="fas fa-trash-alt text-xs"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="${list.collapsed ? 'hidden-section' : ''} divide-y divide-slate-100 dark:divide-slate-700/50">
+            ${listTasks.length === 0 ? '<div class="p-8 text-center text-slate-400 dark:text-slate-500 text-sm">No tasks added yet.</div>' : ''}
+            ${listTasks.map(task => {
+                let badgeHTML = '';
+                if (task.priority === 3) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-red-50 text-red-600 dark:bg-red-500/20 dark:text-red-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-fire-flame-curved text-[9px]"></i> High</span>`;
+                else if (task.priority === 1) badgeHTML = `<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 ml-2 font-bold whitespace-nowrap"><i class="fas fa-arrow-down text-[9px]"></i> Low</span>`;
+                
+                // --- INSIDE generateListHTML ---
+                const colorName = task.color || 'indigo';
+                const colorHex = taskColors[colorName];
+
+                let timerState = activeTimers[task.id];
+                if(!timerState && task.time) {
+                    timerState = { isPlaying: false, remainingSec: task.time * 60 };
+                }
+
+                const createdTimeStr = formatTimeDisplay(task.createdAt);
+                const completedTimeStr = task.completedAt ? formatTimeDisplay(task.completedAt) : '';
+                
+                // Escape title for JS function params
+                const safeTitle = task.title.replace(/'/g, "\\'");
+
+                return `
+                <div class="task-card group relative p-5 bg-white dark:bg-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors" style="border-left-color: ${colorHex};">
+                    <div class="flex items-start gap-4">
+                        <button onclick="toggleTaskStatus('${task.id}', ${task.completed})" class="mt-0.5 w-6 h-6 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${task.completed ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-500 text-transparent hover:border-indigo-400'}">
+                            <i class="fas fa-check text-[10px]"></i>
+                        </button>
+                        <div class="flex-grow min-w-0">
+                            <div class="flex justify-between items-start mb-1.5 gap-2">
+                                <div class="flex flex-wrap items-center">
+                                    <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 transition-colors ${task.completed ? 'line-through text-slate-400 dark:text-slate-500' : ''}">${task.title}</p>
+                                    ${!task.completed ? badgeHTML : ''}
+                                </div>
+                                <div class="task-actions opacity-0 flex items-center gap-1 shrink-0">${!task.completed ? `<button onclick="enterFocusMode('${task.id}', '${safeTitle}', ${task.time}, '${colorName}', '${colorHex}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" title="Focus Mode"><i class="fas fa-expand text-xs"></i></button>` : ''}
+                                    <button onclick="openTaskModal('${list.id}', '${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"><i class="fas fa-pen text-xs"></i></button>
+                                    <button onclick="deleteTask('${task.id}')" class="w-7 h-7 rounded-md text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/40 hover:text-red-500 dark:hover:text-red-400 transition-colors"><i class="fas fa-trash text-xs"></i></button>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap items-center gap-3 text-[10px] font-medium text-slate-400 dark:text-slate-500 mb-2 mt-1">
+                                <span title="Created At"><i class="far fa-clock mr-1"></i>${createdTimeStr || 'N/A'}</span>
+                                ${task.completed && completedTimeStr ? `<span title="Completed At" class="text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 py-0.5 rounded-md"><i class="fas fa-check-double mr-1"></i>${completedTimeStr}</span>` : ''}
+                                ${task.subtasks?.length ? `<span class="flex items-center gap-1"><i class="fas fa-list-ul"></i> ${task.subtasks.filter(s => s.completed).length}/${task.subtasks.length} steps</span>` : ''}
+                            </div>
+
+                            ${task.time && !task.completed ? `
+                                <div class="flex items-center gap-2 mt-2">
+                                    <button onclick="editTaskTime('${task.id}')" class="bg-slate-50 dark:bg-slate-900/30 text-slate-600 dark:text-slate-400 px-2 py-1 rounded-lg flex items-center gap-1.5 font-mono text-xs font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-sm" title="Click to edit time">
+                                        <i class="fas fa-hourglass-half"></i>
+                                        <span id="timer-display-${task.id}">${formatTime(timerState ? timerState.remainingSec : task.time * 60)}</span>
+                                        <i class="fas fa-pencil-alt text-[9px] ml-0.5 opacity-60"></i>
+                                    </button>
+                                    
+                                    <button id="timer-btn-${task.id}" onclick="toggleTimer('${task.id}', ${task.time})" class="w-7 h-7 flex items-center justify-center bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-full hover:bg-slate-50 shadow-sm transition-colors" style="color: ${colorHex}">
+                                        ${timerState && timerState.isPlaying ? '<i class="fas fa-pause text-[10px]"></i>' : '<i class="fas fa-play text-[10px] ml-0.5"></i>'}
+                                    </button>
+                                </div>
+                            ` : ''}
+
+                            ${task.subtasks?.length ? `
+                                <div class="space-y-2 mt-3">
+                                    ${task.subtasks.map((s, idx) => `
+                                        <label class="flex items-start gap-2.5 group/sub cursor-pointer">
+                                            <input type="checkbox" onchange="toggleSubtaskMain('${task.id}', ${idx})" ${s.completed ? 'checked' : ''} class="mt-0.5 shrink-0">
+                                            <span class="text-sm text-slate-600 dark:text-slate-400 transition-colors group-hover/sub:text-slate-900 dark:group-hover/sub:text-slate-200 ${s.completed ? 'line-through !text-slate-400 dark:!text-slate-500' : ''}">${s.text}</span>
+                                        </label>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('')}
+            
+            <div class="border-t border-slate-100 dark:border-slate-700 p-5 bg-slate-50/30 dark:bg-slate-800/30 space-y-4">
+                <div>
+                    <span class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Experience Note <i class="fas fa-pen-nib ml-1 text-indigo-400"></i></span>
+                    <textarea onblur="saveDayNote('${list.id}', this.value)" class="w-full px-4 py-3 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all text-sm font-medium text-slate-700 dark:text-slate-200 placeholder-slate-400 resize-none shadow-sm" rows="2" placeholder="How was your day? Write your experience...">${list.note || ''}</textarea>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    `;
+}
 
         function renderTodoLists() {
+          updateSmartMessage();
             if(lists.length === 0) {
                 hide('page-alldays');
                 if(activePage === 'alldays') {
@@ -1326,6 +1445,122 @@
             setTimeout(() => t.classList.remove('translate-y-20'), 50);
             setTimeout(() => { t.classList.add('translate-y-20'); setTimeout(() => t.remove(), 300); }, 3000);
         }
+      // Smart AI-like Motivation Generator 🤖
+function updateSmartMessage() {
+    const aiTextEl = document.querySelector('#aiMotivationText .ai-text');
+    if (!aiTextEl) return;
+
+    // Get Today and Yesterday's Dates
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const tStr = today.toLocaleDateString('en-CA');
+    const yStr = yesterday.toLocaleDateString('en-CA');
+
+    // Find lists and calculate stats
+    const yList = lists.find(l => l.date === yStr);
+    const yTasks = yList ? tasks.filter(t => t.listId === yList.id) : [];
+    const yTotal = yTasks.length;
+    const yDone = yTasks.filter(t => t.completed).length;
+    const yPercent = yTotal > 0 ? (yDone / yTotal) * 100 : 0;
+
+    const tList = lists.find(l => l.date === tStr);
+    const tTasks = tList ? tasks.filter(t => t.listId === tList.id) : [];
+    const tTotal = tTasks.length;
+
+    let message = "";
+
+    // AI Logic generation based on performance 🧠
+    if (yTotal === 0) {
+        message = tTotal > 0 
+            ? `You took yesterday off. Time to crush these ${tTotal} tasks today! 🔥` 
+            : `Let's set the pace! Add some tasks to kickstart your productivity today. 🚀`;
+    } else if (yPercent === 100) {
+        message = `You completely cleared the board yesterday! 🌟 Keep that 100% momentum going today!`;
+    } else if (yPercent >= 50) {
+        message = `Solid effort yesterday completing ${yDone} of ${yTotal} tasks. Let's push for a perfect score today! 💪`;
+    } else if (yDone > 0) {
+        message = `Yesterday was a bit slow (${yDone}/${yTotal} done). You need to put in double the effort today to catch up! ⚡`;
+    } else {
+        message = `Yesterday didn't go as planned. Take a deep breath, reset, and focus on knocking out just one task to start! 🎯`;
+    }
+
+    aiTextEl.innerText = message;
+}
+      
+      // --- FOCUS MODE LOGIC 🎯 ---
+        let currentFocusTaskId = null;
+        let focusTotalSeconds = 0;
+
+        window.enterFocusMode = (taskId, taskTitle, timeMinutes, colorName, colorHex) => {
+            currentFocusTaskId = taskId;
+            const fallbackTime = timeMinutes || 25; // Default to 25 mins if no time set
+            const timerState = activeTimers[taskId] || { remainingSec: fallbackTime * 60, isPlaying: false };
+            focusTotalSeconds = fallbackTime * 60;
+            
+            // Set UI Data
+            document.getElementById('focusTaskTitle').innerText = taskTitle;
+            document.getElementById('focusTimerDisplay').innerText = formatTime(timerState.remainingSec);
+            
+            // Apply Task Colors to Focus UI
+            const colorBadge = document.getElementById('focusTaskColorBadge');
+            colorBadge.style.color = colorHex;
+            colorBadge.style.borderColor = `${colorHex}40`;
+            colorBadge.style.backgroundColor = `${colorHex}10`;
+            document.getElementById('focusTaskColorText').innerText = colorName;
+            
+            document.getElementById('focusTimerCircle').setAttribute('stroke', colorHex);
+            document.getElementById('focusTimerToggleBtn').style.backgroundColor = colorHex;
+            
+            // Show Overlay & Enter Fullscreen
+            document.getElementById('focusModeOverlay').classList.remove('hidden-section');
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(err => console.log("Fullscreen blocked:", err));
+            }
+
+            // Auto-Start Timer ⚡
+            if (!timerState.isPlaying) toggleTimer(taskId, fallbackTime);
+            document.getElementById('focusTimerToggleBtn').innerHTML = '<i class="fas fa-pause"></i>';
+            updateFocusCircle();
+        };
+
+        window.exitFocusMode = () => {
+            document.getElementById('focusModeOverlay').classList.add('hidden-section');
+            if (document.exitFullscreen && document.fullscreenElement) document.exitFullscreen();
+            currentFocusTaskId = null;
+            renderTodoLists(); 
+        };
+
+        window.toggleFocusTimer = () => {
+            if (!currentFocusTaskId) return;
+            const task = tasks.find(t => t.id === currentFocusTaskId);
+            toggleTimer(currentFocusTaskId, task.time || 25);
+            const isPlaying = activeTimers[currentFocusTaskId].isPlaying;
+            document.getElementById('focusTimerToggleBtn').innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play ml-1"></i>';
+        };
+        
+        window.completeTaskInFocus = () => {
+            if (!currentFocusTaskId) return;
+            toggleTaskStatus(currentFocusTaskId, false); // Mark as complete
+            exitFocusMode();
+        };
+
+        function updateFocusCircle() {
+            if (!currentFocusTaskId || !activeTimers[currentFocusTaskId]) return;
+            const timer = activeTimers[currentFocusTaskId];
+            
+            const display = document.getElementById('focusTimerDisplay');
+            if (display) display.innerText = formatTime(timer.remainingSec);
+            
+            const circle = document.getElementById('focusTimerCircle');
+            if (circle) {
+                // Calculate percentage and update stroke-dashoffset
+                const percent = (timer.remainingSec / focusTotalSeconds) * 100;
+                circle.style.strokeDashoffset = 100 - percent; 
+            }
+        }
+      
     </script>
 </body>
 </html>
